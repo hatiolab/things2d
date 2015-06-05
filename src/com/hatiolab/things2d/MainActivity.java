@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -12,8 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.hatiolab.things2d.dxhost.ThingsHost;
+import com.hatiolab.things2d.gl.TextureRenderer;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -55,7 +59,13 @@ public class MainActivity extends Activity implements
 		thread.start();
 				
 		ThingsSurfaceView thingsView = new ThingsSurfaceView(this);
-		ThingsRenderer render = new ThingsRenderer();
+		TextureRenderer renderer = new TextureRenderer();
+		renderer = new TextureRenderer();
+		renderer.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+		thingsView.setRenderer(renderer);
+		
+		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		addContentView(thingsView, params);
 	}
 
 	@Override

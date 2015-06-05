@@ -52,12 +52,13 @@ public class MainActivity extends Activity implements
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				host.start();				
+				host.start();
 			}
 		});
 		thread.start();
 				
 		ThingsSurfaceView thingsView = new ThingsSurfaceView(this);
+		thingsView.setEGLContextClientVersion(2);
 		TextureRenderer renderer = new TextureRenderer();
 		renderer = new TextureRenderer();
 		renderer.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
@@ -66,7 +67,7 @@ public class MainActivity extends Activity implements
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		addContentView(thingsView, params);
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		host.stop();

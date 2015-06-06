@@ -56,16 +56,7 @@ public class ImageRenderer extends ThingsRenderer {
 		// Set the clear color to black
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);
 
-		// Create the shaders, solid color
-		int vertexShader = GraphicTools.loadShader(GLES20.GL_VERTEX_SHADER,
-				GraphicTools.vs_SolidColor);
-		int fragmentShader = GraphicTools.loadShader(GLES20.GL_FRAGMENT_SHADER,
-				GraphicTools.fs_SolidColor);
-
-		GraphicTools.sp_SolidColor = GLES20.glCreateProgram();
-		GLES20.glAttachShader(GraphicTools.sp_SolidColor, vertexShader);
-		GLES20.glAttachShader(GraphicTools.sp_SolidColor, fragmentShader);
-		GLES20.glLinkProgram(GraphicTools.sp_SolidColor);
+		int vertexShader, fragmentShader = 0;
 
 		// Create the shaders, images
 		vertexShader = GraphicTools.loadShader(GLES20.GL_VERTEX_SHADER,

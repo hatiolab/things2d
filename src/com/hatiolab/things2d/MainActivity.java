@@ -4,19 +4,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.graphics.BitmapFactory;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout.LayoutParams;
 
-import com.hatiolab.things2d.dxhost.ThingsHost;
-import com.hatiolab.things2d.gl.TextureRenderer;
+import com.hatiolab.things2d.dxhost.DxEventHandler;
+import com.hatiolab.things2d.dxhost.Host;
+import com.hatiolab.things2d.dxhost.ThingsConnect;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -33,7 +34,7 @@ public class MainActivity extends Activity implements
 	 */
 	private CharSequence mTitle;
 	
-	private ThingsHost host;
+	private ThingsConnect connect;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +49,14 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
-		host = new ThingsHost("192.168.0.34", 2015);
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				host.start();
-			}
-		});
-		thread.start();
-				
-		ThingsSurfaceView thingsView = new ThingsSurfaceView(this);
-		thingsView.setEGLContextClientVersion(2);
-		TextureRenderer renderer = new TextureRenderer();
-		renderer = new TextureRenderer();
-		renderer.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-		thingsView.setRenderer(renderer);
-		
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		addContentView(thingsView, params);
+		connect = new ThingsConnect("192.168.0.34", 2015);
+		connect.setEventListener(new DxEventHandler(connect, Host.getInstance(this)));
+		connect.start();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		host.stop();
+		connect.stop();
 		
 		super.onDestroy();
 	}
@@ -89,7 +75,6 @@ public class MainActivity extends Activity implements
 		switch (number) {
 		case 1:
 			mTitle = getString(R.string.title_section1);
-			Log.i("MENU 000001", "x");
 			break;
 		case 2:
 			mTitle = getString(R.string.title_section2);
@@ -141,7 +126,7 @@ public class MainActivity extends Activity implements
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
-
+		
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -159,9 +144,10 @@ public class MainActivity extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			return rootView;
+			View view = new ThingsSurfaceView(getActivity(), getArguments().getInt(
+					ARG_SECTION_NUMBER));
+
+			return view;
 		}
 
 		@Override
@@ -170,6 +156,36 @@ public class MainActivity extends Activity implements
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
+
+		@Override
+		public void onDetach() {
+			super.onDetach();
+		}
+
+		@Override
+		public void onStart() {
+
+			super.onStart();
+		}
+
+		@Override
+		public void onStop() {
+			
+			super.onStop();
+		}
+
+		@Override
+		public void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+		}
+
+		@Override
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+		}
+		
 	}
 
 }

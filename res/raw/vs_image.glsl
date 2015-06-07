@@ -1,10 +1,11 @@
-uniform mat4 uMVPMatrix;
+uniform mat4 transformer;
 
-attribute vec4 vPosition;
-attribute vec2 a_texCoord;
-varying vec2 v_texCoord;
+attribute vec4 vertices;
+attribute vec2 texture_coord;
+
+varying vec2 v_texture_coord;
 
 void main() {
-  gl_Position = uMVPMatrix * vPosition;
-  v_texCoord = a_texCoord;
+  gl_Position = transformer * vertices;
+  v_texture_coord = texture_coord;
 }

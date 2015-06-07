@@ -1,10 +1,8 @@
 package com.hatiolab.things2d.gl;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -13,9 +11,6 @@ import android.opengl.GLES20;
 import com.hatiolab.things2d.DevtimeError;
 
 public class GraphicTools {
-    // Program variables
-    public static int sp_SolidColor;
-    public static int sp_Image;
  
     private static String readShaderInAssets(Context context, String path) {
 		StringBuffer shader = new StringBuffer();

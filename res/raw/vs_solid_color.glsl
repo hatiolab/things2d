@@ -1,6 +1,6 @@
-uniform    mat4        uMVPMatrix;
-attribute  vec4        vPosition;
+uniform    mat4        transformer;
+attribute  vec4        vertices;
 
 void main() {
-  gl_Position = uMVPMatrix * vPosition;
+  gl_Position = transformer * vertices;
 }

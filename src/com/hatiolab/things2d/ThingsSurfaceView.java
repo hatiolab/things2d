@@ -6,12 +6,12 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
 import com.hatiolab.things2d.renderer.ImageRenderer;
-import com.hatiolab.things2d.renderer.ThingsRenderer;
+import com.hatiolab.things2d.renderer.Things2DRenderer;
 import com.hatiolab.things2d.renderer.TriangleRenderer;
 
 public class ThingsSurfaceView extends GLSurfaceView {
 	
-	private ThingsRenderer renderer;
+	private Things2DRenderer renderer;
 	
 	public ThingsSurfaceView(Context context, int mode) {
 		super(context);
@@ -36,7 +36,7 @@ public class ThingsSurfaceView extends GLSurfaceView {
 			renderer = new ImageRenderer(getContext(), mode);
 			break;
 		default:
-			renderer = new ThingsRenderer(getContext(), mode);
+			renderer = new TriangleRenderer(getContext(), mode);
 		}
 		
 		setRenderer(renderer);

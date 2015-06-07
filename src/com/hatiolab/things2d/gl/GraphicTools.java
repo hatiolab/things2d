@@ -1,48 +1,69 @@
 package com.hatiolab.things2d.gl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.opengl.GLES20;
+
+import com.hatiolab.things2d.DevtimeError;
 
 public class GraphicTools {
     // Program variables
     public static int sp_SolidColor;
     public static int sp_Image;
  
-    /* SHADER Solid
-     *
-     * This shader is for rendering a colored primitive.
-     *
-     */
-    public static final String vs_SolidColor =
-        "uniform    mat4        uMVPMatrix;" +
-        "attribute  vec4        vPosition;" +
-        "void main() {" +
-        "  gl_Position = uMVPMatrix * vPosition;" +
-        "}";
- 
-    public static final String fs_SolidColor =
-        "precision mediump float;" +
-        "void main() {" +
-        "  gl_FragColor = vec4(0,0.5,0.5,1);" +
-        "}";
- 
-    public static final String vs_Image =
-	    "uniform mat4 uMVPMatrix;" +
-	    "attribute vec4 vPosition;" +
-	    "attribute vec2 a_texCoord;" +
-	    "varying vec2 v_texCoord;" +
-	    "void main() {" +
-	    "  gl_Position = uMVPMatrix * vPosition;" +
-	    "  v_texCoord = a_texCoord;" +
-	    "}";
+    private static String readShaderInAssets(Context context, String path) {
+		StringBuffer shader = new StringBuffer();
+    	AssetManager assets = context.getAssets();
+
+		try {
+		
+			InputStream inputStream = assets.open(path);
+		
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+		
+			String read = in.readLine();
+			while (read != null) {
+			  shader.append(read + "\n");
+				read = in.readLine();
+			}
+		
+			shader.deleteCharAt(shader.length() - 1);
+		} catch (Exception e) {
+			throw new DevtimeError("Could not read shader: " + e.getLocalizedMessage(), e);
+		}
+		
+		return shader.toString();
+    }
     
-	public static final String fs_Image =
-	    "precision mediump float;" +
-	    "varying vec2 v_texCoord;" +
-	    "uniform sampler2D s_texture;" +
-	    "void main() {" +
-	    "  gl_FragColor = texture2D( s_texture, v_texCoord );" +
-	    "}";
-    	
+    private static String readShaderInResource(Context context, int resId) {
+		StringBuffer shader = new StringBuffer();
+		
+		try {
+		
+			InputStream inputStream = context.getResources().openRawResource(resId);
+		
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+		
+			String read = in.readLine();
+			while (read != null) {
+			  shader.append(read + "\n");
+				read = in.readLine();
+			}
+		
+			shader.deleteCharAt(shader.length() - 1);
+		} catch (Exception e) {
+			throw new DevtimeError("Could not read shader: " + e.getLocalizedMessage(), e);
+		}
+		
+		return shader.toString();
+    }
+    
     public static int loadShader(int type, String shaderCode){
  
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
@@ -56,4 +77,13 @@ public class GraphicTools {
         // return the shader
         return shader;
     }
+
+    public static int loadShader(Context context, int type, String path) {
+    	return loadShader(type, readShaderInAssets(context, path));
+    }
+    
+    public static int loadShader(Context context, int type, int resId) {
+    	return loadShader(type, readShaderInResource(context, resId));
+    }
+
 }

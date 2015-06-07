@@ -8,6 +8,7 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.hatiolab.things2d.R;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -59,10 +60,8 @@ public class ImageRenderer extends ThingsRenderer {
 		int vertexShader, fragmentShader = 0;
 
 		// Create the shaders, images
-		vertexShader = GraphicTools.loadShader(GLES20.GL_VERTEX_SHADER,
-				GraphicTools.vs_Image);
-		fragmentShader = GraphicTools.loadShader(GLES20.GL_FRAGMENT_SHADER,
-				GraphicTools.fs_Image);
+		vertexShader = GraphicTools.loadShader(context, GLES20.GL_VERTEX_SHADER, R.raw.vs_image);
+		fragmentShader = GraphicTools.loadShader(context, GLES20.GL_FRAGMENT_SHADER, R.raw.fs_image);
 
 		GraphicTools.sp_Image = GLES20.glCreateProgram();
 		GLES20.glAttachShader(GraphicTools.sp_Image, vertexShader);

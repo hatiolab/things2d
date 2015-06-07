@@ -49,15 +49,12 @@ public class TriangleRenderer extends ThingsRenderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		super.onSurfaceCreated(gl, config);
 
-        // Create the triangle
-        SetupTriangle();
- 
         // Set the clear color to black
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);
  
         // Create the shaders
-        int vertexShader = GraphicTools.loadShader(GLES20.GL_VERTEX_SHADER, GraphicTools.vs_SolidColor);
-        int fragmentShader = GraphicTools.loadShader(GLES20.GL_FRAGMENT_SHADER, GraphicTools.fs_SolidColor);
+        int vertexShader = GraphicTools.loadShader(context, GLES20.GL_VERTEX_SHADER, "shader/vs_solid_color.glsl");
+        int fragmentShader = GraphicTools.loadShader(context, GLES20.GL_FRAGMENT_SHADER, "shader/fs_solid_color.glsl");
  
         GraphicTools.sp_SolidColor = GLES20.glCreateProgram();             // create empty OpenGL ES Program
         GLES20.glAttachShader(GraphicTools.sp_SolidColor, vertexShader);   // add the vertex shader to program
@@ -74,6 +71,9 @@ public class TriangleRenderer extends ThingsRenderer {
         // We need to know the current width and height.
         mScreenWidth = width;
         mScreenHeight = height;
+ 
+        // Create the triangle
+        SetupTriangle();
  
         // Redo the Viewport, making it fullscreen.
         GLES20.glViewport(0, 0, (int)mScreenWidth, (int)mScreenHeight);

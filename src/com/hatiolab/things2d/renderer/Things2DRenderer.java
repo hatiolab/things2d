@@ -75,7 +75,7 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
         setupModel();
         setupTextureCoordinate();
         setupTexture();
-		setTexureParams();
+//		setTexureParams();
 		
         // Redo the Viewport, making it fullscreen.
         GLES20.glViewport(0, 0, width, height);
@@ -125,23 +125,17 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
 		// Prepare the texture coordinates
 		GLES20.glVertexAttribPointer(texture_coord_handle, 2, GLES20.GL_FLOAT, false, 0, uvBuffer);
 	
-		// Get handle to textures locations
-		int sampler_handle = GLES20.glGetUniformLocation(program, "texture");
-
-		// Set the sampler texture unit to 0, where we have saved the texture.
-		GLES20.glUniform1i(sampler_handle, 0);
-
+		onBeforeDrawElement();
 		
 		// Draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawListBuffer.capacity(),
                 GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
  
+        onAfterDrawElement();
         
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(vertices_handle);
-		if(uvBuffer != null) {
-			GLES20.glDisableVertexAttribArray(texture_coord_handle);
-		}
+		GLES20.glDisableVertexAttribArray(texture_coord_handle);
 
         // Save the current time to see how long it took.
         mLastTime = now;
@@ -241,7 +235,9 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
 	}
 
 	protected void setupTexture() {}
-
+	protected void onBeforeDrawElement() {}
+	protected void onAfterDrawElement() {}
+	
 	protected abstract int getVertexShader();
 	
 	protected abstract int getFragmentShader();

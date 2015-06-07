@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import com.hatiolab.things2d.renderer.ImageRenderer;
 import com.hatiolab.things2d.renderer.Things2DRenderer;
 import com.hatiolab.things2d.renderer.TriangleRenderer;
+import com.hatiolab.things2d.renderer.YUVRenderer;
 
 public class ThingsSurfaceView extends GLSurfaceView {
 	
@@ -34,6 +35,9 @@ public class ThingsSurfaceView extends GLSurfaceView {
 			break;
 		case 2:
 			renderer = new ImageRenderer(getContext(), mode);
+			break;
+		case 3:
+			renderer = new YUVRenderer(getContext(), mode);
 			break;
 		default:
 			renderer = new TriangleRenderer(getContext(), mode);

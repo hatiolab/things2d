@@ -15,7 +15,6 @@ public class ImageRenderer extends Things2DRenderer {
 
 	public ImageRenderer(Context context, int mode) {
 		super(context, mode);
-		mLastTime = System.currentTimeMillis() + 100;
 	}
 
 	protected IntentFilter getIntentFilter() {
@@ -43,10 +42,23 @@ public class ImageRenderer extends Things2DRenderer {
 		// Load the bitmap into the bound texture.
 		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
 
+		setTexureParams();
+		
 		// We are done using the bitmap so we should recycle it.
 		bmp.recycle();
 	}
 
+	protected void onBeforeDrawElement() {
+		// Get handle to textures locations
+		int sampler_handle = GLES20.glGetUniformLocation(program, "texture");
+
+		// Set the sampler texture unit to 0, where we have saved the texture.
+		GLES20.glUniform1i(sampler_handle, 0);
+	}
+	
+	protected void onAfterDrawElement() {
+	}
+	
 	@Override
 	protected float[] getVertices() {
 		return new float[] {

@@ -1,6 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
-import android.content.Intent;
+import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
 import com.hatiolab.dx.api.EventListener;
@@ -19,7 +19,7 @@ public class HandlerSetSetting implements EventListener {
 	}
 
 	@Override
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 
 		Primitive primitive = (Primitive) data;
 		long value = primitive.getU32();
@@ -31,6 +31,18 @@ public class HandlerSetSetting implements EventListener {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

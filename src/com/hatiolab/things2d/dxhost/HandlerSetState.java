@@ -1,5 +1,7 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.nio.channels.SocketChannel;
+
 import com.hatiolab.dx.api.DxConnect;
 import com.hatiolab.dx.api.EventListener;
 import com.hatiolab.dx.packet.Data;
@@ -16,7 +18,7 @@ public class HandlerSetState implements EventListener {
 	}
 	
 	@Override
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 
 		switch (header.getCode()) {
 
@@ -24,6 +26,18 @@ public class HandlerSetState implements EventListener {
 			break;
 		}
 
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

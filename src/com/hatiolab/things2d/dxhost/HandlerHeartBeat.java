@@ -1,5 +1,7 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.nio.channels.SocketChannel;
+
 import android.util.Log;
 
 import com.hatiolab.dx.api.DxConnect;
@@ -18,7 +20,19 @@ public class HandlerHeartBeat implements EventListener {
 	}
 	
 	@Override
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 		Log.i("HandlerHeartBeat", "HeartBeat");
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 }

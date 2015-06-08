@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.nio.channels.SocketChannel;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,7 +25,7 @@ public class HandlerEvent implements EventListener {
 	}
 	
 	@Override
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 		switch (header.getCode()) {
 		case Code.DX_EVT_CONNECT:
 //			Intent intent = new Intent("Connect");
@@ -78,5 +79,17 @@ public class HandlerEvent implements EventListener {
 			} catch (Exception e) {
 			}
 		}
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 }

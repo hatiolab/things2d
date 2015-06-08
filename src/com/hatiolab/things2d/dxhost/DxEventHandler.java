@@ -1,5 +1,7 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.nio.channels.SocketChannel;
+
 import com.hatiolab.dx.api.DxConnect;
 import com.hatiolab.dx.api.EventListener;
 import com.hatiolab.dx.packet.Data;
@@ -108,38 +110,50 @@ public class DxEventHandler implements EventListener {
 		this.handlerStream = handlerStream;
 	}
 
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 		switch(header.getType()) {
 		case Type.DX_PACKET_TYPE_HB : /* Heart Beat */
-			handlerHeartBeat.onDxEvent(header, data);;
+			handlerHeartBeat.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_GET_SETTING	: /* Get Setting */
-			handlerGetSetting.onDxEvent(header, data);;
+			handlerGetSetting.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_SET_SETTING : /* Set Setting */
-			handlerSetSetting.onDxEvent(header, data);;
+			handlerSetSetting.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_GET_STATE : /* Get State */
-			handlerGetState.onDxEvent(header, data);;
+			handlerGetState.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_SET_STATE : /* Set State */
-			handlerSetState.onDxEvent(header, data);;
+			handlerSetState.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_EVENT : /* Event */
-			handlerEvent.onDxEvent(header, data);;
+			handlerEvent.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_COMMAND : /* Command */
-			handlerCommand.onDxEvent(header, data);;
+			handlerCommand.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_FILE : /* File Content */
-			handlerFile.onDxEvent(header, data);;
+			handlerFile.onEvent(header, data);;
 			break;
 		case Type.DX_PACKET_TYPE_STREAM : /* Streaming Content */
-			handlerStream.onDxEvent(header, data);;
+			handlerStream.onEvent(header, data);;
 			break;
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

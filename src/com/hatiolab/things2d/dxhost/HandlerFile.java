@@ -1,5 +1,7 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.nio.channels.SocketChannel;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +25,7 @@ public class HandlerFile implements EventListener {
 	}
 
 	@Override
-	public void onDxEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) {
 		switch (header.getCode()) {
 		case Code.DX_FILE:
 			onFilePartial(data);
@@ -90,5 +92,17 @@ public class HandlerFile implements EventListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onConnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected(SocketChannel channel) {
+		// TODO Auto-generated method stub
+		
 	}
 }

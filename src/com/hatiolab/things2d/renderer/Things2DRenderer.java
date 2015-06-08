@@ -15,10 +15,13 @@ import android.content.IntentFilter;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.hatiolab.things2d.gl.GraphicTools;
+import com.hatiolab.things2d.util.FrameCounter;
 
 public abstract class Things2DRenderer extends BroadcastReceiver implements GLSurfaceView.Renderer {
 	protected int mode = 0;
@@ -39,14 +42,17 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
     protected ShortBuffer drawListBuffer;
     protected FloatBuffer uvBuffer;
   
-    // misc
-    protected long mLastTime;
+    // Frame Counter
+    protected FrameCounter counter;
+    
+	private WakeLock mWL;
 
     public Things2DRenderer(Context context, int mode) {
 		super();
 		this.context = context;
 		this.mode = mode;
-        mLastTime = System.currentTimeMillis() + 100;
+		
+		counter = new FrameCounter();
 	}
 
 	public void onReceive(Context context, Intent intent) {
@@ -60,13 +66,15 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		LocalBroadcastManager.getInstance(context).registerReceiver(this, getIntentFilter());
+
+		mWL = ((PowerManager)context.getSystemService ( Context.POWER_SERVICE )).newWakeLock(PowerManager.FULL_WAKE_LOCK, "WakeLock");
+	    mWL.acquire();
 		
 		program = createProgram(getVertexShader(), getFragmentShader());
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-
         // We need to know the current width and height.
         mScreenWidth = width;
         mScreenHeight = height;
@@ -82,19 +90,14 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
         
         // Build Projectiong And View
         mtrxProjectionAndView = getProjectionAndView(width, height);
+        
+        counter.reset();        
  	}
-
+	
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		 
-        // Get the current time
-        long now = System.currentTimeMillis();
- 
-        // We should make sure we are valid and sane
-        if (mLastTime > now) return;
- 
-        // Get the amount of time the last frame took.
-        long elapsed = now - mLastTime;
+
+		counter.up();
  
         // clear Screen and Depth Buffer, we have set the clear color as black.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -130,6 +133,7 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
 		// Draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawListBuffer.capacity(),
                 GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES20.glFlush();
  
         onAfterDrawElement();
         
@@ -137,9 +141,6 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
         GLES20.glDisableVertexAttribArray(vertices_handle);
 		GLES20.glDisableVertexAttribArray(texture_coord_handle);
 
-        // Save the current time to see how long it took.
-        mLastTime = now;
- 
 	}
 
 	public void destroy() {
@@ -147,11 +148,13 @@ public abstract class Things2DRenderer extends BroadcastReceiver implements GLSu
 	}
 	
 	public void onResume() {
-        mLastTime = System.currentTimeMillis();
+	    mWL.acquire();
+		counter.reset();
 	}
 	
 	public void onPause() {
-		
+		if(mWL.isHeld())
+			mWL.release();
 	}
 	
 	protected int createProgram(int rcVertexShader, int rcFragmentShader) {

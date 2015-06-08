@@ -3,8 +3,9 @@
 
     <string name="app_name">things2d</string>
     <string name="title_section1">Triangle</string>
-    <string name="title_section2">YUV</string>
-    <string name="title_section3">H.264</string>
+    <string name="title_section2">Bitmap</string>
+    <string name="title_section3">YUV420 to RGB</string>
+    <string name="title_section4">Camera</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

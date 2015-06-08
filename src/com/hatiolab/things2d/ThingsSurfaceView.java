@@ -5,10 +5,11 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
+import com.hatiolab.things2d.renderer.CameraRenderer;
 import com.hatiolab.things2d.renderer.ImageRenderer;
 import com.hatiolab.things2d.renderer.Things2DRenderer;
 import com.hatiolab.things2d.renderer.TriangleRenderer;
-import com.hatiolab.things2d.renderer.YUVRenderer;
+import com.hatiolab.things2d.renderer.YUV420Renderer;
 
 public class ThingsSurfaceView extends GLSurfaceView {
 	
@@ -37,7 +38,10 @@ public class ThingsSurfaceView extends GLSurfaceView {
 			renderer = new ImageRenderer(getContext(), mode);
 			break;
 		case 3:
-			renderer = new YUVRenderer(getContext(), mode);
+			renderer = new YUV420Renderer(getContext(), mode);
+			break;
+		case 4:
+			renderer = new CameraRenderer(getContext(), mode);
 			break;
 		default:
 			renderer = new TriangleRenderer(getContext(), mode);

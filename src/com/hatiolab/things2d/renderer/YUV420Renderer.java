@@ -9,7 +9,7 @@ import android.opengl.GLES20;
 
 import com.hatiolab.things2d.R;
 
-public class YUVRenderer extends Things2DRenderer {
+public class YUV420Renderer extends Things2DRenderer {
 
 	int y_texture;
 	int u_texture;
@@ -31,7 +31,7 @@ public class YUVRenderer extends Things2DRenderer {
 	
 	// Geometric variables
 
-	public YUVRenderer(Context context, int mode) {
+	public YUV420Renderer(Context context, int mode) {
 		super(context, mode);
 	}
 
@@ -65,15 +65,28 @@ public class YUVRenderer extends Things2DRenderer {
 		v_buffer = ByteBuffer.allocateDirect(800 * 480 / 4);
 	}
 		
+	byte vy = 0;
+	
 	@Override
 	protected void onBeforeDrawElement() {
-		(new Random()).nextBytes(ys);
-		(new Random()).nextBytes(us);
-		(new Random()).nextBytes(vs);
+		for(int i = 0;i < 800*480;i++, vy++)
+			ys[i] = vy;
+		
+		for(int i = 0;i < 800*480/4;i++) {
+			us[i] = 33;
+			vs[i] = 33;
+		}
+
+//		(new Random()).nextBytes(ys);
+//		(new Random()).nextBytes(us);
+//		(new Random()).nextBytes(vs);
 		
 		y_buffer.put(ys);
+		y_buffer.position(0);
 		u_buffer.put(us);
+		u_buffer.position(0);
 		v_buffer.put(vs);
+		v_buffer.position(0);
 		
 //		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, y_texture_names[0]);
 		GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, 800,
@@ -123,9 +136,6 @@ public class YUVRenderer extends Things2DRenderer {
 	
 	@Override
 	protected void onAfterDrawElement() {
-		y_buffer.clear();
-		u_buffer.clear();
-		v_buffer.clear();
 	}
 
 	@Override
@@ -145,11 +155,11 @@ public class YUVRenderer extends Things2DRenderer {
 
 	@Override
 	protected int getVertexShader() {
-		return R.raw.vs_yuv_convert;
+		return R.raw.vs_yuv420_to_rgb;
 	}
 
 	@Override
 	protected int getFragmentShader() {
-		return R.raw.fs_yuv_convert;
+		return R.raw.fs_yuv420_to_rgb;
 	}
 }

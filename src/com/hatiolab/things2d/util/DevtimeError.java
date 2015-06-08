@@ -1,4 +1,4 @@
-package com.hatiolab.things2d;
+package com.hatiolab.things2d.util;
 
 public class DevtimeError extends Error {
 

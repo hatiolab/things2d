@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
 
-import com.hatiolab.things2d.DevtimeError;
+import com.hatiolab.things2d.util.DevtimeError;
 
 public class GraphicTools {
  

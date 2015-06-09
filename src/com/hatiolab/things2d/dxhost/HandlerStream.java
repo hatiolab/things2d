@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
@@ -19,7 +20,7 @@ public class HandlerStream implements EventListener {
 		this.host = host;
 	}
 	
-	public void onEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) throws IOException {
 		switch(header.getCode()) {
 		case Code.DX_STREAM:
 			onStream(data);

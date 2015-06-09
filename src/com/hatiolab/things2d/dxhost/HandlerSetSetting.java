@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
@@ -19,7 +20,7 @@ public class HandlerSetSetting implements EventListener {
 	}
 
 	@Override
-	public void onEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) throws IOException {
 
 		Primitive primitive = (Primitive) data;
 		long value = primitive.getU32();

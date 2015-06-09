@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
@@ -110,7 +111,7 @@ public class DxEventHandler implements EventListener {
 		this.handlerStream = handlerStream;
 	}
 
-	public void onEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) throws IOException {
 		switch(header.getType()) {
 		case Type.DX_PACKET_TYPE_HB : /* Heart Beat */
 			handlerHeartBeat.onEvent(header, data);;

@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.dxhost;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import android.util.Log;
@@ -20,7 +21,7 @@ public class HandlerHeartBeat implements EventListener {
 	}
 	
 	@Override
-	public void onEvent(Header header, Data data) {
+	public void onEvent(Header header, Data data) throws IOException {
 		Log.i("HandlerHeartBeat", "HeartBeat");
 	}
 

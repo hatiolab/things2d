@@ -39,7 +39,7 @@ public class ThingsConnect implements Runnable {
 	public void run() {
 		client = new DxClient();
 		
-		packetEventListener = new DxEventHandler(this.host);
+		packetEventListener = new DxEventHandler(this.host, client);
 		
 		DiscoveryListener discoveryListener = new DiscoveryListener() {
 

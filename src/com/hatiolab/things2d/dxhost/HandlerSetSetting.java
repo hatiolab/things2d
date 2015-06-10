@@ -5,15 +5,18 @@ import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.data.Primitive;
 import com.hatiolab.dx.net.PacketEventListener;
+import com.hatiolab.dx.net.PacketSender;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
 public class HandlerSetSetting implements PacketEventListener {
 
-	Host host;
-
-	HandlerSetSetting(Host host) {
+	Host	host;
+	PacketSender sender;
+	
+	HandlerSetSetting(Host host, PacketSender sender) {
 		this.host = host;
+		this.sender = sender;
 	}
 
 	@Override

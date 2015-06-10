@@ -2,11 +2,9 @@ package com.hatiolab.things2d.dxhost;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import com.hatiolab.dx.api.DxConnect;
 import com.hatiolab.dx.net.PacketEventListener;
+import com.hatiolab.dx.net.PacketSender;
 import com.hatiolab.dx.packet.Code;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
@@ -15,12 +13,11 @@ import com.hatiolab.dx.packet.Packet;
 public class HandlerEvent implements PacketEventListener {
 	
 	Host	host;
+	PacketSender sender;
 	
-	HeartBeatJob job = null;
-	Timer scheduler = null;
-	
-	HandlerEvent(Host host) {
+	HandlerEvent(Host host, PacketSender sender) {
 		this.host = host;
+		this.sender = sender;
 	}
 	
 	@Override
@@ -32,9 +29,9 @@ public class HandlerEvent implements PacketEventListener {
 //			Host.getContext().sendBroadcast(intent);
 			
 			
-			scheduler = new Timer();
-			job = new HeartBeatJob();
-			scheduler.scheduleAtFixedRate(job, 10000, 20000);
+//			scheduler = new Timer();
+//			job = new HeartBeatJob();
+//			scheduler.scheduleAtFixedRate(job, 10000, 20000);
 			
 			/* 아래는 테스트를 위한 코드임. */
 //			try {
@@ -46,11 +43,11 @@ public class HandlerEvent implements PacketEventListener {
 			
 			break;
 		case Code.DX_EVT_DISCONNECT:
-			if(scheduler != null) {
-				scheduler.cancel();
-				scheduler = null;
-				job = null;
-			}
+//			if(scheduler != null) {
+//				scheduler.cancel();
+//				scheduler = null;
+//				job = null;
+//			}
 			break;
 //		case Code.DX_EVT_ERROR:
 //			break;
@@ -62,7 +59,7 @@ public class HandlerEvent implements PacketEventListener {
 			/* For test - echo back */
 			try {
 				Packet packet = new Packet(header, data);
-				host.sendPacket(packet);
+				sender.sendPacket(packet);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -71,15 +68,6 @@ public class HandlerEvent implements PacketEventListener {
 		}
 	}
 	
-	class HeartBeatJob extends TimerTask {
-		public void run() {
-			try {
-				host.sendHeartBeat();
-			} catch (Exception e) {
-			}
-		}
-	}
-
 	@Override
 	public void onConnected(SocketChannel channel) {
 		// TODO Auto-generated method stub

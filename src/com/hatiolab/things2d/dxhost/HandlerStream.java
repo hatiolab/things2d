@@ -5,6 +5,7 @@ import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.data.Stream;
 import com.hatiolab.dx.net.PacketEventListener;
+import com.hatiolab.dx.net.PacketSender;
 import com.hatiolab.dx.packet.Code;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
@@ -12,9 +13,11 @@ import com.hatiolab.dx.packet.Header;
 public class HandlerStream implements PacketEventListener {
 	
 	Host	host;
+	PacketSender sender;
 	
-	HandlerStream(Host host) {
+	HandlerStream(Host host, PacketSender sender) {
 		this.host = host;
+		this.sender = sender;
 	}
 	
 	public void onEvent(Header header, Data data) throws IOException {

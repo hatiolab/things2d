@@ -73,7 +73,7 @@ public class TextureRenderer implements GLSurfaceView.Renderer{
     
     public TextureRenderer() {
         // TODO Auto-generated constructor stub
-        mRunOnDraw = new LinkedList<>();
+        mRunOnDraw = new LinkedList<Runnable>();
 
     }
 

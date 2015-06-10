@@ -5,18 +5,15 @@ import java.nio.channels.SocketChannel;
 
 import android.util.Log;
 
-import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
-public class HandlerHeartBeat implements EventListener {
+public class HandlerHeartBeat implements PacketEventListener {
 
 	Host	host;
-	DxConnect connect;
 	
-	HandlerHeartBeat(DxConnect connect, Host host) {
-		this.connect = connect;
+	HandlerHeartBeat( Host host) {
 		this.host = host;
 	}
 	

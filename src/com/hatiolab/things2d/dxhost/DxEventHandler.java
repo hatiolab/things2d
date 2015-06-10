@@ -4,110 +4,108 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 import com.hatiolab.dx.packet.Type;
 
-public class DxEventHandler implements EventListener {
+public class DxEventHandler implements PacketEventListener {
 	
 	Host	host;
-	DxConnect connect;
 	
-	EventListener handlerHeartBeat;
-	EventListener handlerCommand;
-	EventListener handlerGetSetting;
-	EventListener handlerSetSetting;
-	EventListener handlerGetState;
-	EventListener handlerSetState;
-	EventListener handlerEvent;
-	EventListener handlerFile;
-	EventListener handlerStream;
+	PacketEventListener handlerHeartBeat;
+	PacketEventListener handlerCommand;
+	PacketEventListener handlerGetSetting;
+	PacketEventListener handlerSetSetting;
+	PacketEventListener handlerGetState;
+	PacketEventListener handlerSetState;
+	PacketEventListener handlerEvent;
+	PacketEventListener handlerFile;
+	PacketEventListener handlerStream;
 	
-	public DxEventHandler(DxConnect connect, Host host) {
-		this.connect = connect;
+	public DxEventHandler(Host host) {
 		this.host = host;
 		
-		setHandlerCommand(new HandlerCommand(connect, host));
-		setHandlerGetSetting(new HandlerGetSetting(connect, host));
-		setHandlerSetSetting(new HandlerSetSetting(connect, host));
-		setHandlerGetState(new HandlerGetState(connect, host));
-		setHandlerSetState(new HandlerSetState(connect, host));
-		setHandlerHeartBeat(new HandlerHeartBeat(connect, host));
-		setHandlerEvent(new HandlerEvent(connect, host));
-		setHandlerFile(new HandlerFile(connect, host));
-		setHandlerStream(new HandlerStream(connect, host));
+		setHandlerCommand(new HandlerCommand(host));
+		setHandlerGetSetting(new HandlerGetSetting(host));
+		setHandlerSetSetting(new HandlerSetSetting(host));
+		setHandlerGetState(new HandlerGetState(host));
+		setHandlerSetState(new HandlerSetState(host));
+		setHandlerHeartBeat(new HandlerHeartBeat(host));
+		setHandlerEvent(new HandlerEvent(host));
+		setHandlerFile(new HandlerFile(host));
+		setHandlerStream(new HandlerStream(host));
 	}
 	
-	public EventListener getHandlerHeartBeat() {
+	public PacketEventListener getHandlerHeartBeat() {
 		return handlerHeartBeat;
 	}
 
-	public void setHandlerHeartBeat(EventListener handlerHeartBeat) {
+	public void setHandlerHeartBeat(PacketEventListener handlerHeartBeat) {
 		this.handlerHeartBeat = handlerHeartBeat;
 	}
 
-	public EventListener getHandlerCommand() {
+	public PacketEventListener getHandlerCommand() {
 		return handlerCommand;
 	}
 
-	public void setHandlerCommand(EventListener handlerCommand) {
+	public void setHandlerCommand(PacketEventListener handlerCommand) {
 		this.handlerCommand = handlerCommand;
 	}
 
-	public EventListener getHandlerGetSetting() {
+	public PacketEventListener getHandlerGetSetting() {
 		return handlerGetSetting;
 	}
 
-	public void setHandlerGetSetting(EventListener handlerGetSetting) {
+	public void setHandlerGetSetting(PacketEventListener handlerGetSetting) {
 		this.handlerGetSetting = handlerGetSetting;
 	}
 
-	public EventListener getHandlerSetSetting() {
+	public PacketEventListener getHandlerSetSetting() {
 		return handlerSetSetting;
 	}
 
-	public void setHandlerSetSetting(EventListener handlerSetSetting) {
+	public void setHandlerSetSetting(PacketEventListener handlerSetSetting) {
 		this.handlerSetSetting = handlerSetSetting;
 	}
 
-	public EventListener getHandlerGetState() {
+	public PacketEventListener getHandlerGetState() {
 		return handlerGetState;
 	}
 
-	public void setHandlerGetState(EventListener handlerGetState) {
+	public void setHandlerGetState(PacketEventListener handlerGetState) {
 		this.handlerGetState = handlerGetState;
 	}
 
-	public EventListener getHandlerSetState() {
+	public PacketEventListener getHandlerSetState() {
 		return handlerSetState;
 	}
 
-	public void setHandlerSetState(EventListener handlerSetState) {
+	public void setHandlerSetState(PacketEventListener handlerSetState) {
 		this.handlerSetState = handlerSetState;
 	}
 
-	public EventListener getHandlerEvent() {
+	public PacketEventListener getHandlerEvent() {
 		return handlerEvent;
 	}
 
-	public void setHandlerEvent(EventListener handlerEvent) {
+	public void setHandlerEvent(PacketEventListener handlerEvent) {
 		this.handlerEvent = handlerEvent;
 	}
 
-	public EventListener getHandlerFile() {
+	public PacketEventListener getHandlerFile() {
 		return handlerFile;
 	}
 
-	public void setHandlerFile(EventListener handlerFile) {
+	public void setHandlerFile(PacketEventListener handlerFile) {
 		this.handlerFile = handlerFile;
 	}
 	
-	public EventListener getHandlerStream() {
+	public PacketEventListener getHandlerStream() {
 		return handlerStream;
 	}
 
-	public void setHandlerStream(EventListener handlerStream) {
+	public void setHandlerStream(PacketEventListener handlerStream) {
 		this.handlerStream = handlerStream;
 	}
 

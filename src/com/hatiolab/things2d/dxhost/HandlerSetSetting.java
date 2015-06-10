@@ -3,19 +3,16 @@ package com.hatiolab.things2d.dxhost;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
-import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
 import com.hatiolab.dx.data.Primitive;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
-public class HandlerSetSetting implements EventListener {
+public class HandlerSetSetting implements PacketEventListener {
 
 	Host host;
-	DxConnect connect;
 
-	HandlerSetSetting(DxConnect connect, Host host) {
-		this.connect = connect;
+	HandlerSetSetting(Host host) {
 		this.host = host;
 	}
 

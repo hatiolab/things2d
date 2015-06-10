@@ -8,20 +8,18 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
 import com.hatiolab.dx.data.FileInfoArray;
 import com.hatiolab.dx.data.FilePartial;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Code;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
-public class HandlerFile implements EventListener {
+public class HandlerFile implements PacketEventListener {
 
 	Host host;
-	DxConnect connect;
 
-	HandlerFile(DxConnect connect, Host host) {
-		this.connect = connect;
+	HandlerFile(Host host) {
 		this.host = host;
 	}
 
@@ -88,7 +86,7 @@ public class HandlerFile implements EventListener {
 				int nbegin = end + 1;
 				int nend = (end + Data.FILE_PARTIAL_MAX_SIZE) > (total - 1) ? (total - 1)
 						: (end + Data.FILE_PARTIAL_MAX_SIZE);
-				connect.sendGetFile(partial.getPath(), nbegin, nend);
+				host.sendGetFile(partial.getPath(), nbegin, nend);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

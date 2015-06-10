@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
-public class HandlerGetState implements EventListener {
+public class HandlerGetState implements PacketEventListener {
 
 	Host	host;
-	DxConnect connect;
 	
-	HandlerGetState(DxConnect connect, Host host) {
-		this.connect = connect;
+	HandlerGetState(Host host) {
 		this.host = host;
 	}
 	

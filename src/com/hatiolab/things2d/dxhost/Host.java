@@ -2,6 +2,8 @@ package com.hatiolab.things2d.dxhost;
 
 import android.content.Context;
 
+import com.hatiolab.dx.packet.Packet;
+
 public class Host {
 	private static Host host;
 	
@@ -19,5 +21,19 @@ public class Host {
 
 	public Context getContext() {
 		return context;
+	}
+	
+	/** TODO 임시 방편임 */
+	
+	public void sendPacket(Packet packet) {
+		
+	}
+	
+	public void sendHeartBeat() {
+		
+	}
+	
+	public void sendGetFile(String path, int begin, int end) {
+		
 	}
 }

@@ -6,22 +6,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.hatiolab.dx.api.DxConnect;
-import com.hatiolab.dx.api.EventListener;
+import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Code;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 import com.hatiolab.dx.packet.Packet;
 
-public class HandlerEvent implements EventListener {
+public class HandlerEvent implements PacketEventListener {
 	
 	Host	host;
-	DxConnect connect;
 	
 	HeartBeatJob job = null;
 	Timer scheduler = null;
 	
-	HandlerEvent(DxConnect connect, Host host) {
-		this.connect = connect;
+	HandlerEvent(Host host) {
 		this.host = host;
 	}
 	
@@ -54,9 +52,9 @@ public class HandlerEvent implements EventListener {
 				job = null;
 			}
 			break;
-//		case Code.OD_EVT_ERROR:
+//		case Code.DX_EVT_ERROR:
 //			break;
-//		case Code.OD_EVT_ALARM:
+//		case Code.DX_EVT_ALARM:
 //			break;
 
 		default:
@@ -64,7 +62,7 @@ public class HandlerEvent implements EventListener {
 			/* For test - echo back */
 			try {
 				Packet packet = new Packet(header, data);
-				connect.sendPacket(packet);
+				host.sendPacket(packet);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -76,7 +74,7 @@ public class HandlerEvent implements EventListener {
 	class HeartBeatJob extends TimerTask {
 		public void run() {
 			try {
-				connect.sendHeartBeat();
+				host.sendHeartBeat();
 			} catch (Exception e) {
 			}
 		}

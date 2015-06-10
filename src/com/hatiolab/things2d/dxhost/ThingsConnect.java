@@ -1,24 +1,61 @@
 package com.hatiolab.things2d.dxhost;
 
-import com.hatiolab.dx.api.DxConnect;
+import java.net.InetAddress;
 
-public class ThingsConnect extends DxConnect implements Runnable {
+import com.hatiolab.dx.api.DxClient;
+import com.hatiolab.dx.net.DiscoveryListener;
+import com.hatiolab.dx.net.PacketEventListener;
+
+public class ThingsConnect implements Runnable {
+	
+	public static final int DISCOVERY_SERVICE_PORT = 3456;
 	
 	private Thread runner;
+	private DxClient client;
 
-	public ThingsConnect(String hostname, int port) {
-		super(hostname, port);
+	private int discoveryPort;
+
+	private PacketEventListener packetEventListener;
+	private Host host;
+	
+	public ThingsConnect(Host host, int discoveryPort) {
+		this.host = host;
+		this.discoveryPort = discoveryPort;
 	}
 
-	@Override
 	public void start() {
-		if(runner == null)
+		if(runner == null) {
 			runner = new Thread(this);
+			
+			runner.start();
+		}
 	}
 
+	public void stop() {
+		
+	}
+	
 	@Override
 	public void run() {
-		start();
+		client = new DxClient();
+		
+		packetEventListener = new DxEventHandler(this.host);
+		
+		DiscoveryListener discoveryListener = new DiscoveryListener() {
+
+			@Override
+			public void onFoundServer(InetAddress address, int port) {
+				client.startPacketClient(address, port, packetEventListener);
+			}
+		};
+
+		try {
+			
+			client.start(discoveryPort, discoveryListener);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

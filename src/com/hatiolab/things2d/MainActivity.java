@@ -4,10 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,8 +46,8 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
-		connect = new ThingsConnect("192.168.0.34", 2015);
-		connect.setEventListener(new DxEventHandler(connect, Host.getInstance(this)));
+		
+		connect = new ThingsConnect(Host.getInstance(this), ThingsConnect.DISCOVERY_SERVICE_PORT);
 		connect.start();
 	}
 	

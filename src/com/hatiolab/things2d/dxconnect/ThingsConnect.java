@@ -33,7 +33,7 @@ public class ThingsConnect implements Runnable {
 	private PacketEventListener devicePacketListener;
 
 	public ThingsConnect(Device device, Host host, int discoveryPort) throws IOException {
-		this.mplexer = new EventMultiplexer();
+		this.mplexer = EventMultiplexer.getInstance();
 
 		this.host = host;
 		this.discoveryPort = discoveryPort;

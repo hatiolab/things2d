@@ -2,26 +2,15 @@ package com.hatiolab.things2d.dxdevice;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import android.util.Log;
 
 import com.hatiolab.dx.net.PacketEventListener;
-import com.hatiolab.dx.net.PacketIO;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
-import com.hatiolab.dx.packet.Packet;
 import com.hatiolab.dx.packet.Type;
 
 public class DeviceEventHandler implements PacketEventListener {
 
 	Device device;
-
-	HeartBeatJob job = null;
-	Timer scheduler = null;
-	
-	SocketChannel channel = null;
 
 	PacketEventListener handlerHeartBeat;
 	PacketEventListener handlerCommand;
@@ -164,31 +153,10 @@ public class DeviceEventHandler implements PacketEventListener {
 
 	@Override
 	public void onConnected(SocketChannel channel) {
-		scheduler = new Timer();
-		job = new HeartBeatJob();
-		scheduler.scheduleAtFixedRate(job, 10000, 20000);
-		
-		this.channel = channel;
 	}
 
 	@Override
 	public void onDisconnected(SocketChannel channel) {
-		if (scheduler != null) {
-			scheduler.cancel();
-			scheduler = null;
-			job = null;
-		}
-	}
-
-	class HeartBeatJob extends TimerTask {
-		public void run() {
-			try {
-				final Packet packet = new Packet(Type.DX_PACKET_TYPE_HB, 0,	null);
-				PacketIO.sendPacket(DeviceEventHandler.this.channel, packet);
-			} catch (Exception e) {
-				Log.e("BUG", "이 메시지가 반복되면 버그임.", e);
-			}
-		}
 	}
 
 }

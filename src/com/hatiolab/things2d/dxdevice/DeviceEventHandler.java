@@ -1,24 +1,27 @@
-package com.hatiolab.things2d.dxhost;
+package com.hatiolab.things2d.dxdevice;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.util.Log;
+
 import com.hatiolab.dx.net.PacketEventListener;
-import com.hatiolab.dx.net.PacketSender;
+import com.hatiolab.dx.net.PacketIO;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 import com.hatiolab.dx.packet.Packet;
 import com.hatiolab.dx.packet.Type;
 
-public class DxEventHandler implements PacketEventListener {
+public class DeviceEventHandler implements PacketEventListener {
 
-	Host host;
-	PacketSender sender;
+	Device device;
 
 	HeartBeatJob job = null;
 	Timer scheduler = null;
+	
+	SocketChannel channel = null;
 
 	PacketEventListener handlerHeartBeat;
 	PacketEventListener handlerCommand;
@@ -30,19 +33,18 @@ public class DxEventHandler implements PacketEventListener {
 	PacketEventListener handlerFile;
 	PacketEventListener handlerStream;
 
-	public DxEventHandler(Host host, PacketSender sender) {
-		this.host = host;
-		this.sender = sender;
+	public DeviceEventHandler(Device device) {
+		this.device = device;
 
-		setHandlerCommand(new HandlerCommand(host, sender));
-		setHandlerGetSetting(new HandlerGetSetting(host, sender));
-		setHandlerSetSetting(new HandlerSetSetting(host, sender));
-		setHandlerGetState(new HandlerGetState(host, sender));
-		setHandlerSetState(new HandlerSetState(host, sender));
-		setHandlerHeartBeat(new HandlerHeartBeat(host, sender));
-		setHandlerEvent(new HandlerEvent(host, sender));
-		setHandlerFile(new HandlerFile(host, sender));
-		setHandlerStream(new HandlerStream(host, sender));
+		setHandlerCommand(new HandlerCommand(device));
+		setHandlerGetSetting(new HandlerGetSetting(device));
+		setHandlerSetSetting(new HandlerSetSetting(device));
+		setHandlerGetState(new HandlerGetState(device));
+		setHandlerSetState(new HandlerSetState(device));
+		setHandlerHeartBeat(new HandlerHeartBeat(device));
+		setHandlerEvent(new HandlerEvent(device));
+		setHandlerFile(new HandlerFile(device));
+		setHandlerStream(new HandlerStream(device));
 	}
 
 	public PacketEventListener getHandlerHeartBeat() {
@@ -117,42 +119,42 @@ public class DxEventHandler implements PacketEventListener {
 		this.handlerStream = handlerStream;
 	}
 
-	public void onEvent(Header header, Data data) throws IOException {
+	public void onEvent(SocketChannel channel, Header header, Data data) throws IOException {
 		switch (header.getType()) {
 		case Type.DX_PACKET_TYPE_HB: /* Heart Beat */
-			handlerHeartBeat.onEvent(header, data);
+			handlerHeartBeat.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_GET_SETTING: /* Get Setting */
-			handlerGetSetting.onEvent(header, data);
+			handlerGetSetting.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_SET_SETTING: /* Set Setting */
-			handlerSetSetting.onEvent(header, data);
+			handlerSetSetting.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_GET_STATE: /* Get State */
-			handlerGetState.onEvent(header, data);
+			handlerGetState.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_SET_STATE: /* Set State */
-			handlerSetState.onEvent(header, data);
+			handlerSetState.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_EVENT: /* Event */
-			handlerEvent.onEvent(header, data);
+			handlerEvent.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_COMMAND: /* Command */
-			handlerCommand.onEvent(header, data);
+			handlerCommand.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_FILE: /* File Content */
-			handlerFile.onEvent(header, data);
+			handlerFile.onEvent(channel, header, data);
 			;
 			break;
 		case Type.DX_PACKET_TYPE_STREAM: /* Streaming Content */
-			handlerStream.onEvent(header, data);
+			handlerStream.onEvent(channel, header, data);
 			;
 			break;
 		default:
@@ -165,6 +167,8 @@ public class DxEventHandler implements PacketEventListener {
 		scheduler = new Timer();
 		job = new HeartBeatJob();
 		scheduler.scheduleAtFixedRate(job, 10000, 20000);
+		
+		this.channel = channel;
 	}
 
 	@Override
@@ -179,10 +183,10 @@ public class DxEventHandler implements PacketEventListener {
 	class HeartBeatJob extends TimerTask {
 		public void run() {
 			try {
-				final Packet packet = new Packet(Type.DX_PACKET_TYPE_HB, 0,
-						null);
-				sender.sendPacket(packet);
+				final Packet packet = new Packet(Type.DX_PACKET_TYPE_HB, 0,	null);
+				PacketIO.sendPacket(DeviceEventHandler.this.channel, packet);
 			} catch (Exception e) {
+				Log.e("BUG", "이 메시지가 반복되면 버그임.", e);
 			}
 		}
 	}

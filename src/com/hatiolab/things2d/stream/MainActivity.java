@@ -20,8 +20,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-import com.example.android_stream_server.R;
-
 public class MainActivity extends Activity implements SurfaceHolder.Callback,
 		PreviewCallback {
 
@@ -60,11 +58,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback,
 				.penaltyLog().penaltyDeath().build());
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+//		setContentView(R.layout.activity_main); TODO
 
 		avcCodec = new AvcEncoder(width, height, framerate, bitrate);
 
-		m_prevewview = (SurfaceView) findViewById(R.id.sv_player);
+//		m_prevewview = (SurfaceView) findViewById(R.id.sv_player); TODO
 		m_surfaceHolder = m_prevewview.getHolder(); // 绑定SurfaceView，取得SurfaceHolder对象
 		m_surfaceHolder.setFixedSize(width, height); // 预览大小設置
 		m_surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);

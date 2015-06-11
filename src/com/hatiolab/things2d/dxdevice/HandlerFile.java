@@ -1,4 +1,4 @@
-package com.hatiolab.things2d.dxhost;
+package com.hatiolab.things2d.dxdevice;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -16,10 +16,10 @@ import com.hatiolab.dx.packet.Header;
 
 public class HandlerFile implements PacketEventListener {
 
-	Host host;
+	Device device;
 
-	HandlerFile(Host host) {
-		this.host = host;
+	HandlerFile(Device device) {
+		this.device = device;
 	}
 
 	@Override

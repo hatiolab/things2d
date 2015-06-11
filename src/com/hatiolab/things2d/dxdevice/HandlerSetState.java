@@ -1,4 +1,4 @@
-package com.hatiolab.things2d.dxhost;
+package com.hatiolab.things2d.dxdevice;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -7,12 +7,12 @@ import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
-public class HandlerGetSetting implements PacketEventListener {
+public class HandlerSetState implements PacketEventListener {
 
-	Host	host;
+	Device	device;
 	
-	HandlerGetSetting(Host host) {
-		this.host = host;
+	HandlerSetState(Device device) {
+		this.device = device;
 	}
 	
 	@Override
@@ -21,8 +21,9 @@ public class HandlerGetSetting implements PacketEventListener {
 		switch (header.getCode()) {
 
 	    default :
-	        break;
+			break;
 		}
+
 	}
 
 	@Override
@@ -36,4 +37,5 @@ public class HandlerGetSetting implements PacketEventListener {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

@@ -1,5 +1,7 @@
 package com.hatiolab.things2d;
 
+import java.io.IOException;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,9 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hatiolab.things2d.dxhost.DxEventHandler;
+import com.hatiolab.things2d.dxconnect.ThingsConnect;
+import com.hatiolab.things2d.dxdevice.Device;
 import com.hatiolab.things2d.dxhost.Host;
-import com.hatiolab.things2d.dxhost.ThingsConnect;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -46,9 +48,18 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
+		Device device = Device.getInstance(this);
+		Host host = Host.getInstance(this);
 		
-		connect = new ThingsConnect(Host.getInstance(this), ThingsConnect.DISCOVERY_SERVICE_PORT);
-		connect.start();
+		try {
+			connect = new ThingsConnect(device, host, ThingsConnect.DISCOVERY_SERVICE_PORT);
+			connect.openHost();
+			connect.openDevice();
+			
+			connect.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

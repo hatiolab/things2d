@@ -4,22 +4,19 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.hatiolab.dx.net.PacketEventListener;
-import com.hatiolab.dx.net.PacketSender;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
 
 public class HandlerCommand implements PacketEventListener {
 	
 	Host	host;
-	PacketSender sender;
 	
-	HandlerCommand(Host host, PacketSender sender) {
+	HandlerCommand(Host host) {
 		this.host = host;
-		this.sender = sender;
 	}
 	
 	@Override
-	public void onEvent(Header header, Data data) throws IOException {
+	public void onEvent(SocketChannel channel, Header header, Data data) throws IOException {
 		switch (header.getCode()) {
 		default:
 			break;

@@ -2,12 +2,16 @@ package com.hatiolab.things2d.dxdevice;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import android.content.Intent;
 
 import com.hatiolab.dx.data.Stream;
 import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Code;
 import com.hatiolab.dx.packet.Data;
 import com.hatiolab.dx.packet.Header;
+import com.hatiolab.things2d.gl.GlView;
 
 public class HandlerStream implements PacketEventListener {
 	
@@ -30,20 +34,18 @@ public class HandlerStream implements PacketEventListener {
 
 	public void onStream(Data data) {
 		Stream stream = (Stream)data;
-//		try {
-//			
-////			int type = stream.getType();
-//			
-//			System.out.println(String.format("Streaming [%d]", stream.getLen()));
-//
-//			Bundle extras = new Bundle();
-//			Intent intent = new Intent("getFrame");
-//			extras.putSerializable("frame", stream);
-//			intent.putExtras(extras);
-//			Host.getContext().sendBroadcast(intent);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		
+		if (GlView.getStreamQueue() == null) {
+			GlView.setStreamQueue(new ConcurrentLinkedQueue<byte[]>());
+		}
+		
+		GlView.getStreamQueue().add(stream.getContent());
+		try {
+			Intent intent = new Intent("frame");
+			device.getContext().sendBroadcast(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

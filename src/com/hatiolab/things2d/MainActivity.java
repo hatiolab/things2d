@@ -4,35 +4,30 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
+import com.hatiolab.dx.net.PacketIO;
+import com.hatiolab.dx.packet.Code;
+import com.hatiolab.dx.packet.Packet;
+import com.hatiolab.dx.packet.Type;
 import com.hatiolab.things2d.dxconnect.ThingsConnect;
 import com.hatiolab.things2d.dxdevice.Device;
-import com.hatiolab.things2d.dxhost.Host;
+import com.hatiolab.things2d.gl.GlView;
+import com.hatiolab.things2d.gl.TextureRenderer;
 
-public class MainActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends Activity {
 
-	/**
-	 * Fragment managing the behaviors, interactions and presentation of the
-	 * navigation drawer.
-	 */
-	private NavigationDrawerFragment mNavigationDrawerFragment;
-
-	/**
-	 * Used to store the last screen title. For use in
-	 * {@link #restoreActionBar()}.
-	 */
-	private CharSequence mTitle;
-	
 	private ThingsConnect connect;
 
 	@Override
@@ -40,79 +35,50 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-				.findFragmentById(R.id.navigation_drawer);
-		mTitle = getTitle();
+		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+		GlView vvLive = new GlView(getApplicationContext());
+		vvLive.setEGLContextClientVersion(2);
+		TextureRenderer renderer = new TextureRenderer();
+		renderer.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+		vvLive.setRenderer(renderer);
+		vvLive.setTxRenderer(renderer);
+		((RelativeLayout)findViewById(R.id.lo_receiver)).addView(vvLive, params);
 		
-		Device device = Device.getInstance(this);
-		Host host = Host.getInstance(this);
+		StreamSenderSurfaceView tsv = new StreamSenderSurfaceView(getApplicationContext());
+		((LinearLayout)findViewById(R.id.lo_sender)).addView(tsv, params);
 		
-		try {
-			connect = new ThingsConnect(device, host, ThingsConnect.DISCOVERY_SERVICE_PORT);
-			connect.openHost();
-			connect.openDevice();
+//		ThingsSurfaceView tsv = new ThingsSurfaceView(getApplicationContext(), 4);
+//		((LinearLayout)findViewById(R.id.lo_sender)).addView(tsv, params);
+		
+		((LinearLayout)findViewById(R.id.lo_buttons)).bringToFront();
+		
+		((Button)findViewById(R.id.btn_start_sending)).setOnClickListener(new OnClickListener() {
 			
-			connect.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			@Override
+			public void onClick(View v) {
+				new startCommand().start();
+			}
+		});
+		
+		((Button)findViewById(R.id.btn_stop_sending)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new stopCommand().start();
+			}
+		});
 	}
 	
-	@Override
-	protected void onDestroy() {
-		connect.stop();
-		
-		super.onDestroy();
-	}
-
-	@Override
-	public void onNavigationDrawerItemSelected(int position) {
-		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager
-				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
-	}
-
-	public void onSectionAttached(int number) {
-		switch (number) {
-		case 1:
-			mTitle = getString(R.string.title_section1);
-			break;
-		case 2:
-			mTitle = getString(R.string.title_section2);
-			break;
-		case 3:
-			mTitle = getString(R.string.title_section3);
-			break;
-		case 4:
-			mTitle = getString(R.string.title_section4);
-			break;
-		}
-	}
-
 	public void restoreActionBar() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle(mTitle);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-			// Only show items in the action bar relevant to this screen
-			// if the drawer is not showing. Otherwise, let the drawer
-			// decide what to show in the action bar.
-			getMenuInflater().inflate(R.menu.main, menu);
-			restoreActionBar();
-			return true;
-		}
+		getMenuInflater().inflate(R.menu.main, menu);
+		restoreActionBar();
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -123,80 +89,63 @@ public class MainActivity extends Activity implements
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			return true;
+			Intent i = new Intent(getApplicationContext(), SettingActivity.class);
+			startActivity(i);
+		} else if (id == R.id.action_example) {
+			Intent i = new Intent(getApplicationContext(), MainActivity.class);
+			startActivity(i);
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-		
-		/**
-		 * Returns a new instance of this fragment for the given section number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View view = new ThingsSurfaceView(getActivity(), getArguments().getInt(
-					ARG_SECTION_NUMBER));
-
-			return view;
-		}
-
-		@Override
-		public void onAttach(Activity activity) {
-			super.onAttach(activity);
-			((MainActivity) activity).onSectionAttached(getArguments().getInt(
-					ARG_SECTION_NUMBER));
-		}
-
-		@Override
-		public void onDetach() {
-			super.onDetach();
-		}
-
-		@Override
-		public void onStart() {
-
-			super.onStart();
-		}
-
-		@Override
-		public void onStop() {
-			
-			super.onStop();
-		}
-
-		@Override
-		public void onPause() {
-			// TODO Auto-generated method stub
-			super.onPause();
-		}
-
-		@Override
-		public void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
+	
+	@Override
+	protected void onDestroy() {
+		if (connect != null) {			
+			connect.stop();
 		}
 		
+		super.onDestroy();
 	}
+	
+	class startCommand extends Thread {
+		@Override
+		public void run() {
+			try {
+				if (Device.getToSenderChannel() == null) {
+					Log.d("Start command", "connection is null");
+					return;
+				}
+				
+				Packet p = new Packet(Type.DX_PACKET_TYPE_COMMAND, Code.DX_CMD_START_SENDING, null);
+				PacketIO.sendPacket(Device.getToSenderChannel(), p);	// Receiver -> Sender
+//				PacketIO2Sender pio = new PacketIO2Sender();
+//				pio.sendPacket(ThingsConnect.getToSenderChannel(), p);	// Receiver -> Sender
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			super.run();
+		}
+	}
+	
+	class stopCommand extends Thread {
+		@Override
+		public void run() {
+			try {
+				if (Device.getToSenderChannel() == null) {
+					Log.d("Stop command", "connection is null");
+					return;
+				}
+				
+				Packet p = new Packet(Type.DX_PACKET_TYPE_COMMAND, Code.DX_CMD_STOP_SENDING, null);
+				PacketIO.sendPacket(Device.getToSenderChannel(), p);	// Receiver -> Sender
+//				PacketIO2Sender pio = new PacketIO2Sender();
+//				pio.sendPacket(ThingsConnect.getToSenderChannel(), p);	// Receiver -> Sender
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
+			super.run();
+		}
+	}
 }

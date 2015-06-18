@@ -15,7 +15,7 @@ import com.hatiolab.things2d.dxhost.HostEventHandler;
 
 public class ThingsConnect implements Runnable {
 	
-	public static final int DISCOVERY_SERVICE_PORT = 3456;
+	public static final int DISCOVERY_SERVICE_PORT = 5550;
 	
 	private EventMultiplexer mplexer;
 
@@ -31,10 +31,12 @@ public class ThingsConnect implements Runnable {
 	
 	private PacketEventListener hostPacketListener;
 	private PacketEventListener devicePacketListener;
-
+	
+	
 	public ThingsConnect(Device device, Host host, int discoveryPort) throws IOException {
 		this.mplexer = EventMultiplexer.getInstance();
 
+		this.device = device;
 		this.host = host;
 		this.discoveryPort = discoveryPort;
 	}
@@ -54,7 +56,7 @@ public class ThingsConnect implements Runnable {
 			while(true) {
 				mplexer.poll(1000);
 				
-				if(!client.isConnected()) {
+				if(client != null && !client.isConnected()) {
 					try {
 						client.discovery();
 					} catch (Exception e) {
@@ -81,6 +83,7 @@ public class ThingsConnect implements Runnable {
 		devicePacketListener = new DeviceEventHandler(this.device);
 		
 		server = new DxServer(this.mplexer, 0, discoveryPort, devicePacketListener);
+		server.start();
 	}
 	
 	public void closeDevice() throws Exception {
@@ -95,15 +98,37 @@ public class ThingsConnect implements Runnable {
 
 			@Override
 			public void onFoundServer(InetAddress address, int port) {
-				client.startPacketClient(address, port, hostPacketListener);
+				try {
+					client.startPacketClient(address, port, hostPacketListener);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		};
 
 		client = new DxClient(this.mplexer, discoveryPort, discoveryListener);
+		client.start();
 	}
 	
 	public void closeHost() throws Exception {
 		client.close();
 	}
-	
+
+	public DxClient getClient() {
+		return client;
+	}
+
+	public void setClient(DxClient client) {
+		this.client = client;
+	}
+
+	public DxServer getServer() {
+		return server;
+	}
+
+	public void setServer(DxServer server) {
+		this.server = server;
+	}
+
 }

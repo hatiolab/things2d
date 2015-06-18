@@ -3,6 +3,8 @@ package com.hatiolab.things2d.dxhost;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
+import android.util.Log;
+
 import com.hatiolab.dx.data.Stream;
 import com.hatiolab.dx.net.PacketEventListener;
 import com.hatiolab.dx.packet.Code;
@@ -30,20 +32,20 @@ public class HandlerStream implements PacketEventListener {
 
 	public void onStream(Data data) {
 		Stream stream = (Stream)data;
-//		try {
-//			
-////			int type = stream.getType();
-//			
-//			System.out.println(String.format("Streaming [%d]", stream.getLen()));
-//
+		try {
+			
+//			int type = stream.getType();
+			
+			Log.d("Receiver(StreamHandler)", "Stream Length: " + String.valueOf(stream.getLen()));
+
 //			Bundle extras = new Bundle();
 //			Intent intent = new Intent("getFrame");
 //			extras.putSerializable("frame", stream);
 //			intent.putExtras(extras);
 //			Host.getContext().sendBroadcast(intent);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

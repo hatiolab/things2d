@@ -153,10 +153,10 @@ public class DeviceEventHandler implements PacketEventListener {
 
 	@Override
 	public void onConnected(SocketChannel channel) {
+		Device.setToSenderChannel(channel);
 	}
 
 	@Override
 	public void onDisconnected(SocketChannel channel) {
 	}
-
 }

@@ -10,5 +10,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-
+    <string name="receiver_mode">Receiver Mode</string>
+	<string name="sender_mode">Sender Mode</string>
+    <string name="wifi">WIFI</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="sender">Sender</string>
+    <string name="receiver">Receiver</string>
 </resources>

@@ -18,7 +18,7 @@ public class HandlerHeartBeat implements PacketEventListener {
 	}	
 	@Override
 	public void onEvent(SocketChannel channel, Header header, Data data) throws IOException {
-		Log.i("HandlerHeartBeat", "HeartBeat");
+		Log.i("HandlerHeartBeat", "HOST - HeartBeat");
 	}
 
 	@Override

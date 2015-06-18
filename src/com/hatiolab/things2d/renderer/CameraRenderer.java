@@ -2,6 +2,8 @@ package com.hatiolab.things2d.renderer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -10,16 +12,25 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.hatiolab.dx.data.Stream;
+import com.hatiolab.dx.net.PacketIO;
+import com.hatiolab.dx.packet.Code;
+import com.hatiolab.dx.packet.Packet;
+import com.hatiolab.dx.packet.Type;
 import com.hatiolab.things2d.R;
+import com.hatiolab.things2d.dxconnect.ThingsConnect;
+import com.hatiolab.things2d.sample.AvcEncoder;
 
-public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.OnFrameAvailableListener {
+public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.OnFrameAvailableListener, PreviewCallback {
 	
 	Camera camera;
-		
+	private static boolean sendFlag = false;
+	
 	// Geometric variables
 
 	public CameraRenderer(Context context, int mode) {
@@ -29,6 +40,9 @@ public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.O
 	private int[] hTex;
 	private SurfaceTexture mSTexture;
 
+	private Queue<Stream> streamQueue;
+	private boolean senddingFlag = true;
+	
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		super.onSurfaceCreated(gl, config);
@@ -39,6 +53,7 @@ public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.O
 	    mSTexture.setOnFrameAvailableListener(this);
 	    
 		camera = Camera.open();
+		camera.setPreviewCallback(this);
 		try {
 		    camera.setPreviewTexture(mSTexture);
 		} catch ( Exception ioe ) {
@@ -80,7 +95,9 @@ public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.O
 	    
 	    param.set("orientation", "landscape");
 	    camera.setParameters ( param );
-	    camera.startPreview();		
+	    camera.startPreview();
+	    
+	    task.start();
 	}
 	
 	public void destroy() {
@@ -93,6 +110,11 @@ public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.O
 	    camera = null;
 	    
 	    GLES20.glDeleteTextures ( 1, hTex, 0 );
+	    
+	    senddingFlag = false;
+	    synchronized (task) {
+			task.notify();
+		}
 	}
 
 	protected IntentFilter getIntentFilter() {
@@ -154,5 +176,61 @@ public class CameraRenderer extends Things2DRenderer implements SurfaceTexture.O
 	@Override
 	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
 		mUpdateST = true;
+	}
+
+	int width = 160;
+	int height = 120;
+	int framerate = 20;
+	int bitrate = 2500000;
+	AvcEncoder avcCodec = new AvcEncoder(width, height, framerate, bitrate);
+	byte[] h264 = new byte[width * height * 3/2];
+	
+	@Override
+	public void onPreviewFrame(byte[] data, Camera camera) {
+		if (isSendFlag()) {
+			return;
+		}
+		
+		int ret = avcCodec.offerEncoder(data, h264);
+
+		Stream stream = new Stream(Type.DX_PACKET_TYPE_STREAM, h264);
+		if (streamQueue == null) {
+			streamQueue = new ConcurrentLinkedQueue<Stream>();
+		}
+		if (ret > 0) {
+			streamQueue.add(stream);
+		}
+	}
+	
+	Thread task = new Thread() {
+		@Override
+		public void run() {
+//			while (senddingFlag) {
+//				try {
+//					if (streamQueue == null) {
+//						Thread.sleep(100);
+//						continue;
+//					}
+//					Stream stream = streamQueue.poll();
+//					if (stream != null) {
+//						Packet p = new Packet(Type.DX_PACKET_TYPE_STREAM, Code.DX_STREAM, stream);
+//						PacketIO.sendPacket(ThingsConnect.getReceiverChannel(), p);
+//						Log.d("Camera renderer", "SUCCESS");
+//					}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+		};
+	};
+	
+	public static boolean isSendFlag() {
+		return sendFlag;
+	}
+
+	public static void setSendFlag(boolean sendFlag) {
+		CameraRenderer.sendFlag = sendFlag;
 	}
 }

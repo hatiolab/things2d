@@ -1,4 +1,4 @@
-package com.hatiolab.things2d.stream;
+package com.hatiolab.things2d.sample;
 
 import java.io.IOException;
 

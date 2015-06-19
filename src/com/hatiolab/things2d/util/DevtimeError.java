@@ -1,5 +1,6 @@
 package com.hatiolab.things2d.util;
 
+@SuppressWarnings("serial")
 public class DevtimeError extends Error {
 
 	public DevtimeError() {

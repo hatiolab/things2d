@@ -1,7 +1,6 @@
 package com.hatiolab.things2d;
 
 import java.io.IOException;
-import java.util.Queue;
 
 import android.content.Context;
 import android.graphics.ImageFormat;
@@ -22,17 +21,17 @@ import com.hatiolab.things2d.sample.AvcEncoder;
 public class StreamSenderSurfaceView extends SurfaceView implements
 		PreviewCallback, SurfaceHolder.Callback {
 
-	int width = 640;
-	int height = 480;
+	int width = 1920;
+	int height = 1080;
 	int framerate = 30;
 	int bitrate = 2500000;
 		
 	byte[] h264 = new byte[width * height * 3 / 2];
 	AvcEncoder avcCodec;
+	@SuppressWarnings("deprecation")
 	public Camera m_camera;
 	SurfaceView m_prevewview;
 	SurfaceHolder m_surfaceHolder;
-	private Queue<Stream> streamQueue;
 	private static boolean startFlag = false;
 	
 	public StreamSenderSurfaceView(Context context) {
@@ -68,6 +67,7 @@ public class StreamSenderSurfaceView extends SurfaceView implements
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
 		m_camera.setPreviewCallback(null);
@@ -80,7 +80,7 @@ public class StreamSenderSurfaceView extends SurfaceView implements
 	}
 	
 	@Override
-	public void onPreviewFrame(byte[] data, Camera camera) {
+	public void onPreviewFrame(byte[] data, @SuppressWarnings("deprecation") Camera camera) {
 		if (!isStartFlag()) {
 			return;
 		}
@@ -88,7 +88,7 @@ public class StreamSenderSurfaceView extends SurfaceView implements
 		if (avcCodec == null) {
 			avcCodec = new AvcEncoder(width, height, framerate, bitrate);
 		}
-//		h264 = new byte[width * height * 3 / 2];
+		
 		int ret = avcCodec.offerEncoder(data, h264);
 		try {
 			if (ret > 0) {				
@@ -102,29 +102,6 @@ public class StreamSenderSurfaceView extends SurfaceView implements
 			e.printStackTrace();
 		}
 	}
-	
-//	Thread task = new Thread() {
-//		@Override
-//		public void run() {
-//			while (isStartFlag()) {
-//				try {
-//					if (streamQueue == null) {
-//						Thread.sleep(100);
-//						continue;
-//					}
-//					Stream stream = streamQueue.poll();
-//					if (stream != null) {
-//						Packet p = new Packet(Type.DX_PACKET_TYPE_STREAM, Code.DX_STREAM, stream);
-//						PacketIO.sendPacket(Host.getToReceiverChannel(), p, true);
-//					}
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		};
-//	};
 	
 	public static boolean isStartFlag() {
 		return startFlag;

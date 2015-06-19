@@ -163,10 +163,10 @@ public class HostEventHandler implements PacketEventListener {
 
 	@Override
 	public void onConnected(SocketChannel channel) {
-//		scheduler = new Timer();
-//		job = new HeartBeatJob();
-//		scheduler.scheduleAtFixedRate(job, 2000, 3000);
-//		
+		scheduler = new Timer();
+		job = new HeartBeatJob();
+		scheduler.scheduleAtFixedRate(job, 2000, 10000);
+		
 		this.channel = channel;
 		Host.setToReceiverChannel(channel);
 	}

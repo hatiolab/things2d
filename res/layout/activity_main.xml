@@ -20,12 +20,14 @@
 	    tools:context="com.hatiolab.things2d.MainActivity" >
 	    
         <TextView 
+            android:id="@+id/txt_sender"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/sender" />
 	
 	</LinearLayout>
 	<LinearLayout
+	    android:id="@+id/lo_receiver"
 	    android:layout_width="0dp"
 	    android:layout_height="match_parent"
 	    android:layout_weight="0.5"
@@ -34,12 +36,13 @@
 	    tools:context="com.hatiolab.things2d.MainActivity" >
 	    
 	    <TextView 
+	        android:id="@+id/txt_receiver"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/receiver" />
 	    
 	    <RelativeLayout 
-	        android:id="@+id/lo_receiver"
+	        android:id="@+id/lo_viewer"
 	        android:layout_width="match_parent"
 	    	android:layout_height="match_parent">
 	        <LinearLayout 

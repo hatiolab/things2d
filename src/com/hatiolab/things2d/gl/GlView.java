@@ -22,14 +22,14 @@ public class GlView extends GLSurfaceView implements SurfaceHolder.Callback {
 	private static Queue<byte[]> streamQueue;
 	private BroadcastReceiver receiver;
 	private QueueTask task;
-	private TextureRenderer txRenderer;
+//	private TextureRenderer txRenderer;
 
 	private boolean stopFlag = false;
 	
 	private MediaCodec codec;
 	private static final String MIME_TYPE = "video/avc";
-	private static final int VIDEO_WIDTH_640 = 640;
-	private static final int VIDEO_HEIGHT_480 = 480;
+	private static final int VIDEO_WIDTH_640 = 1440;
+	private static final int VIDEO_HEIGHT_480 = 1080;
 	
 	public GlView(Context context) {
 		super(context);
@@ -106,6 +106,7 @@ public class GlView extends GLSurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void display(byte[] buf, int length) {
 		BufferInfo info = new BufferInfo();
 		ByteBuffer[] inputBuffers = codec.getInputBuffers();
@@ -125,7 +126,6 @@ public class GlView extends GLSurfaceView implements SurfaceHolder.Callback {
 		try {
 			int outputBufferIndex = codec.dequeueOutputBuffer(info, 1000);
 			if (outputBufferIndex > 0) {
-//				ByteBuffer outputBuffer = codec.getOutputBuffer(outputBufferIndex);
 				codec.releaseOutputBuffer(outputBufferIndex, true);		// render UI
 			} else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
 	//				outputBuffers = codec.getOutputBuffers();
@@ -150,11 +150,11 @@ public class GlView extends GLSurfaceView implements SurfaceHolder.Callback {
 		GlView.streamQueue = streamQueue;
 	}
 
-	public TextureRenderer getTxRenderer() {
-		return txRenderer;
-	}
-
-	public void setTxRenderer(TextureRenderer txRenderer) {
-		this.txRenderer = txRenderer;
-	}
+//	public TextureRenderer getTxRenderer() {
+//		return txRenderer;
+//	}
+//
+//	public void setTxRenderer(TextureRenderer txRenderer) {
+//		this.txRenderer = txRenderer;
+//	}
 }

@@ -17,4 +17,12 @@
     <string name="stop">STOP</string>
     <string name="sender">Sender</string>
     <string name="receiver">Receiver</string>
+    <string name="status">Status</string>
+    <string name="setting_wifi_hotspot">Set up Wi-Fi hotspot</string>
+    <string name="hotspot_ssid">Network SSID</string>
+    <string name="hotspot_security">Security</string>
+    <string name="hotspot_password">Password</string>
+    <string name="hotspot_showpassword">Show Password</string>
+    <string name="waiting_pair">Waiting Pair</string>
+    <string name="paired">Paired</string>
 </resources>
